@@ -28,7 +28,9 @@ module.exports = {
     return await this.model.create(message);
   },
   getMessages: async () => {
-    return await this.model.findAll();
+    return await this.model.findAll({
+      attributes: ["id", "author", "content", "messageCreatedAt"],
+    });
   },
   getMessageByAuthor: async (author) => {
     return await this.model.findAll({

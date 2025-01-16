@@ -28,7 +28,9 @@ module.exports = {
     return await this.model.create(letter);
   },
   getLetters: async () => {
-    return await this.model.findAll();
+    return await this.model.findAll({
+      attributes: ["id", "author", "letter", "count"],
+    });
   },
   getLettersByAuthor: async (author) => {
     return await this.model.findAll({
