@@ -7,6 +7,7 @@ module.exports = {
       res.json(letters);
     } catch (error) {
       console.log("Error fetching letters: ", error);
+      res.status(500).json({ error: true, message: "Error fetching letters" });
     }
   },
 };

@@ -101,7 +101,6 @@ lettersButton.addEventListener("click", () => {
 
 setInterval(() => {
   if (tableForDatasDiv.innerHTML != "") {
-    console.log(tableForDatasDiv.id)
     if (tableForDatasDiv.id == "messagesTable") {
       fetchMessages();
     } else {

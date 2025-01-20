@@ -7,6 +7,7 @@ module.exports = {
       res.json(messages);
     } catch (error) {
       console.log("Error fetching messages: ", error);
+      res.status(500).json({ error: true, message: "Error fetching messages" });
     }
   },
 };
