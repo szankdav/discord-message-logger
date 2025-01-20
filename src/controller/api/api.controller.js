@@ -2,61 +2,72 @@ const messageModel = require("../../model/message");
 const alphabetModel = require("../../model/alphabet");
 
 module.exports = {
-  addMessageToDatabase: async (req, res) => {
+  addMessageToDatabase: async (req, res, next) => {
     try {
       const messageFromBody = req.body;
       await messageModel.createMessage(messageFromBody);
-      await module.exports.addLettersToDatabase(req, res, messageFromBody);
+      next();
     } catch (error) {
-      console.log("Cannot add message to database: ", error);
+      error.message = "Error adding letter to database!";
+      next(error);
     }
   },
-  addLettersToDatabase: async (req, res, addedMessage) => {
+
+  addLettersToDatabase: async (req, res, next) => {
     try {
+      const addedMessage = req.body;
       const letterModelsInDatabase = await alphabetModel.getLettersByAuthor(
         addedMessage.author
       );
 
-      const lettersSet = new Set();
+      const lettersMap = new Map();
       for (const letter of addedMessage.content) {
         if (/^[a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ]$/.test(letter)) {
-          lettersSet.add(letter.toLowerCase());
+          const lowerCaseLetter = letter.toLowerCase();
+          if (!lettersMap.has(lowerCaseLetter)) {
+            lettersMap.set(`${lowerCaseLetter}`, 1);
+          } else {
+            lettersMap.set(
+              `${lowerCaseLetter}`,
+              lettersMap.get(`${lowerCaseLetter}`) + 1
+            );
+          }
         }
       }
 
       if (letterModelsInDatabase.length > 0) {
-        for (const letter of lettersSet) {
+        for (let [key, value] of lettersMap) {
           for (const letterModel of letterModelsInDatabase) {
-            if (lettersSet.has(letterModel.dataValues.letter)) {
+            if (lettersMap.has(letterModel.dataValues.letter)) {
               await alphabetModel.incrementLetterCount(letterModel, "count", {
                 by: 1,
               });
-              lettersSet.delete(letterModel.dataValues.letter);
+              lettersMap.delete(letterModel.dataValues.letter);
             }
           }
 
-          for (const letter of lettersSet) {
+          for (let [key, value] of lettersMap) {
             alphabetModel.createLetter({
               author: addedMessage.author,
-              letter: letter,
-              count: 1,
+              letter: key,
+              count: value,
             });
-            lettersSet.delete(letter);
+            lettersMap.delete(key);
           }
         }
       } else {
-        for (const letter of lettersSet) {
+        for (let [key, value] of lettersMap) {
           alphabetModel.createLetter({
             author: addedMessage.author,
-            letter: letter,
-            count: 1,
+            letter: key,
+            count: value,
           });
         }
       }
-
-      res.status(201).json("Message added to the database!");
+      next();
     } catch (error) {
-      console.log("Cannot add letter to database: ", error);
+      error.message = "Error adding letter to database!";
+      next(error);
     }
   },
 };

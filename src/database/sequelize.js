@@ -1,11 +1,7 @@
 const { Sequelize } = require("sequelize");
+const config = require("./config/config");
 
-const dbPath = "./src/database/messages.sqlite";
-
-const sequelize = new Sequelize({
-  dialect: "sqlite",
-  storage: dbPath,
-});
+const sequelize = new Sequelize(config.development);
 
 module.exports = {
   connectToDatabase: async () => {
