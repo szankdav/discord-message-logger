@@ -1,6 +1,4 @@
-import { db, execute } from "./database.js";
-
-const createMessagesTable = async () => {
+const createMessagesTable = async (db, execute) => {
     try {
       await execute(
         db,
@@ -15,7 +13,7 @@ const createMessagesTable = async () => {
     }
   };
   
-  const createLettersTable = async () => {
+  const createLettersTable = async (db, execute) => {
     try {
       await execute(
         db,
@@ -74,10 +72,10 @@ const createMessagesTable = async () => {
     }
   };
   
-  export const createTables = async () => {
+  export const createTables = async (db, execute) => {
     try {
-      await createMessagesTable();
-      await createLettersTable();
+      await createMessagesTable(db, execute);
+      await createLettersTable(db, execute);
     } catch (error) {
       console.log(error);
     }
