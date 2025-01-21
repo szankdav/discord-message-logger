@@ -63,6 +63,7 @@ async function fetchMessages() {
       tableForDatasDiv.innerHTML = "";
       tableForDatasDiv.append(generateTable(messages));
     } else {
+      tableForDatasDiv.innerHTML = "";
       tableForDatasDiv.append(
         document.createTextNode("There is nothing to show right now.")
       );
@@ -83,6 +84,7 @@ async function fetchLetters() {
       tableForDatasDiv.innerHTML = "";
       tableForDatasDiv.append(generateTable(letters));
     } else {
+      tableForDatasDiv.innerHTML = "";
       tableForDatasDiv.append(
         document.createTextNode("There is nothing to show right now.")
       );

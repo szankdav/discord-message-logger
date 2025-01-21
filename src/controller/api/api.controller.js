@@ -21,27 +21,32 @@ module.exports = {
       );
 
       const lettersMap = new Map();
+
       for (const letter of addedMessage.content) {
-        if (/^[a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ]$/.test(letter)) {
-          const lowerCaseLetter = letter.toLowerCase();
-          if (!lettersMap.has(lowerCaseLetter)) {
-            lettersMap.set(`${lowerCaseLetter}`, 1);
-          } else {
-            lettersMap.set(
-              `${lowerCaseLetter}`,
-              lettersMap.get(`${lowerCaseLetter}`) + 1
-            );
-          }
+        if (!/^[a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ]$/.test(letter)) continue;
+
+        const lowerCaseLetter = letter.toLowerCase();
+
+        if (!lettersMap.has(lowerCaseLetter)) {
+          lettersMap.set(`${lowerCaseLetter}`, 1);
+          continue;
         }
+
+        lettersMap.set(
+          `${lowerCaseLetter}`,
+          lettersMap.get(`${lowerCaseLetter}`) + 1
+        );
       }
 
       if (letterModelsInDatabase.length > 0) {
         for (let [key, value] of lettersMap) {
           for (const letterModel of letterModelsInDatabase) {
             if (lettersMap.has(letterModel.dataValues.letter)) {
-              await alphabetModel.incrementLetterCount(letterModel, "count", {
-                by: 1,
-              });
+              await alphabetModel.incrementLetterCount(
+                letterModel,
+                "count",
+                value
+              );
               lettersMap.delete(letterModel.dataValues.letter);
             }
           }

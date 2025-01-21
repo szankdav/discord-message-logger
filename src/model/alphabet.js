@@ -68,7 +68,7 @@ module.exports = {
       },
     });
   },
-  incrementLetterCount: async (letterModel, params) => {
-    return await letterModel.increment(params);
+  incrementLetterCount: async (letterModel, field, value) => {
+    return await letterModel.increment(field, { by: value});
   },
 };
