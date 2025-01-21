@@ -2,6 +2,7 @@
   "name": "discord-message-logger",
   "version": "1.0.0",
   "main": "src/app.js",
+  "type": "module",
   "scripts": {
     "test": "npx vitest",
     "dev": "node src/app.js"
@@ -12,7 +13,6 @@
   "dependencies": {
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
-    "sequelize": "^6.37.5",
     "sqlite3": "^5.1.7"
   },
   "devDependencies": {
