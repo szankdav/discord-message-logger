@@ -27,9 +27,12 @@ const checkAuthorExistense = async (params) => {
 };
 
 const letterIterator = async (params) => {
-  for (let letter of params[1]) {
+  const validLetters = params[1]
+    .toLowerCase()
+    .split("")
+    .filter((char) => /^[a-záéíóöőúüű]$/i.test(char));
+  for (let letter of validLetters) {
     letter = letter.toLowerCase();
-    if (!/^[a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ]$/.test(letter)) continue;
     await updateLetterCount(letter, params[0]);
   }
 };
