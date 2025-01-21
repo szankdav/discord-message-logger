@@ -1,5 +1,4 @@
-import { insertLetterAuthor } from "../database/insertData.js";
-import { updateLetterCount } from "../database/updateData.js";
+import { db, execute, fetchFirst } from "../database/database.js";
 
 class LetterModel {
   constructor(id, author, letter, createdAt, updatedAt) {
@@ -11,18 +10,29 @@ class LetterModel {
   }
 }
 
-export const addLetterAuthorToDatabase = async (params) => {
+export const insertLetterAuthor = async (params) => {
+  const sql = `INSERT INTO Letters (author, createdAt, updatedAt) VALUES (?, ?, ?)`;
   try {
-    await insertLetterAuthor(params);
+    await execute(db, sql, params);
   } catch (error) {
     console.log(error);
   }
 };
 
-export const updateLetterCountInDatabase = async (letter, params) => {
+export const updateLetterCount = async (letter, params) => {
+  const sql = `UPDATE Letters SET ${letter} = ${letter} + 1 WHERE author = ?`;
   try {
-    await updateLetterCount(letter, params);
+    await execute(db, sql, params);
   } catch (error) {
     console.log(error);
   }
-}
+};
+
+export const getLettersByAuthor = async (params) => {
+    const sql = `SELECT * FROM Letters WHERE author = ?`;
+    try {
+      return await fetchFirst(db, sql, params);
+    } catch (error) {
+      console.log(error);
+    }
+  };

@@ -1,14 +1,14 @@
 import {
-  addLetterAuthorToDatabase,
-  updateLetterCountInDatabase,
+  insertLetterAuthor,
+  updateLetterCount,
+  getLettersByAuthor,
 } from "../../model/letter.js";
-import { getLettersByAuthor } from "../../database/getData.js";
 
 export const letterController = async (params) => {
   try {
     const existingAuthor = await checkAuthorExistense(params[0]);
     if (!existingAuthor) {
-      await addLetterAuthorToDatabase([params[0], params[2], params[2]]);
+      await insertLetterAuthor([params[0], params[2], params[2]]);
       await letterIterator(params);
     } else {
       await letterIterator(params);
@@ -27,8 +27,9 @@ const checkAuthorExistense = async (params) => {
 };
 
 const letterIterator = async (params) => {
-  for (const letter of params[1]) {
+  for (let letter of params[1]) {
+    letter = letter.toLowerCase();
     if (!/^[a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ]$/.test(letter)) continue;
-    await updateLetterCountInDatabase(letter, params[0]);
+    await updateLetterCount(letter, params[0]);
   }
 };

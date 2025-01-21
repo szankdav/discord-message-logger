@@ -1,4 +1,4 @@
-import { insertMessage } from "../database/insertData.js";
+import { db, execute } from "../database/database.js";
 
 class MessageModel {
   constructor(id, author, content, messageCreatedAt) {
@@ -9,10 +9,11 @@ class MessageModel {
   }
 };
 
-export const addMessageToDatabase = async (params) => {
+export const insertMessage = async (params) => {
+  const sql = `INSERT INTO Messages(author, message, createdAt) VALUES (?, ?, ?)`;
   try {
-    await insertMessage(params);
+    await execute(db, sql, params);
   } catch (error) {
     console.log(error);
   }
-}
+};
