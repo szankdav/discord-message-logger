@@ -1,18 +1,18 @@
 import { beforeEach, vi, describe, it, expect, afterEach } from "vitest";
 import { letterController } from "./letterController.js";
 import {
-  insertLetterAuthor,
+  insertLetters,
   updateLetterCount,
   getLettersByAuthor,
-} from "../../model/letter.js";
-import { execute } from "../../database/database.js";
-import { createTables } from "../../database/createTables.js";
+} from "../model/letter.js";
+import { execute } from "../database/database.js";
+import { createTables } from "../database/createTables.js";
 import sqlite3 from "sqlite3";
 
 let db;
 
-vi.mock("../../model/letter.js", () => ({
-  insertLetterAuthor: vi.fn(),
+vi.mock("../model/letter.js", () => ({
+  insertLetters: vi.fn(),
   updateLetterCount: vi.fn(),
   getLettersByAuthor: vi.fn(),
 }));
@@ -33,8 +33,10 @@ describe("letterController tests", () => {
 
     await letterController(params);
 
-    expect(insertLetterAuthor).toHaveBeenCalledWith([
+    expect(insertLetters).toHaveBeenCalledWith([
       params[0],
+      '',
+      0,
       params[2],
       params[2],
     ]);
@@ -47,8 +49,10 @@ describe("letterController tests", () => {
 
     await letterController(params);
 
-    expect(insertLetterAuthor).toHaveBeenCalledWith([
+    expect(insertLetters).toHaveBeenCalledWith([
       params[0],
+      '',
+      0,
       params[2],
       params[2],
     ]);
@@ -68,7 +72,7 @@ describe("letterController tests", () => {
 
     await letterController(params);
 
-    expect(insertLetterAuthor).not.toHaveBeenCalled(); 
+    expect(insertLetters).not.toHaveBeenCalled(); 
     expect(updateLetterCount).toHaveBeenCalledTimes(params[1].length);
     getLettersByAuthor.mockRestore();
   });
@@ -78,8 +82,10 @@ describe("letterController tests", () => {
 
     await letterController(params);
 
-    expect(insertLetterAuthor).toHaveBeenCalledWith([
+    expect(insertLetters).toHaveBeenCalledWith([
       params[0],
+      '',
+      0,
       params[2],
       params[2],
     ]);
@@ -100,11 +106,11 @@ describe("letterController tests", () => {
     getLettersByAuthor.mockRestore();
   });
 
-  it("should log errors if `insertLetterAuthor` fails", async () => {
+  it("should log errors if `insertLetters` fails", async () => {
     const params = ["author1", "message", new Date()];
     const consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {});
 
-    insertLetterAuthor.mockRejectedValueOnce(new Error("Insert error"));
+    insertLetters.mockRejectedValueOnce(new Error("Insert error"));
 
     await letterController(params);
 
@@ -129,8 +135,10 @@ describe("letterController tests", () => {
 
     await letterController(params);
 
-    expect(insertLetterAuthor).toHaveBeenCalledWith([
+    expect(insertLetters).toHaveBeenCalledWith([
       params[0],
+      '',
+      0,
       params[2],
       params[2],
     ]);

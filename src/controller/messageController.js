@@ -1,4 +1,4 @@
-import { insertMessage } from "../../model/message.js";
+import { getAllMessages, insertMessage } from "../model/message.js";
 import { letterController } from "./letterController.js";
 
 export const messageController = async (req, res) => {
@@ -13,3 +13,10 @@ export const messageController = async (req, res) => {
   }
 }
 
+export const getAllMessagesController = async () => {
+  try {
+    return await getAllMessages();
+  } catch (error) {
+    console.log(error);
+  }
+}

@@ -1,14 +1,14 @@
 import { describe, it, vi, expect, beforeEach, afterEach } from "vitest";
 import { messageController } from "./messageController.js";
-import { insertMessage } from "../../model/message.js";
+import { insertMessage } from "../model/message.js";
 import { letterController } from "./letterController.js";
-import { createTables } from "../../database/createTables.js";
-import { execute, fetchAll } from "../../database/database.js";
+import { createTables } from "../database/createTables.js";
+import { execute } from "../database/database.js";
 import sqlite3 from "sqlite3";
 
 let db;
 
-vi.mock("../../model/message.js", () => ({
+vi.mock("../model/message.js", () => ({
   insertMessage: vi.fn(),
 }));
 

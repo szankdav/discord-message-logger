@@ -1,4 +1,4 @@
-import { db, execute } from "../database/database.js";
+import { db, execute, fetchAll } from "../database/database.js";
 
 class MessageModel {
   constructor(id, author, content, messageCreatedAt) {
@@ -17,3 +17,12 @@ export const insertMessage = async (params) => {
     console.log(error);
   }
 };
+
+export const getAllMessages = async () => {
+  const sql = `SELECT * FROM Messages`;
+  try {
+    return await fetchAll(db, sql);
+  } catch (error) {
+    console.log(error);
+  }
+}
