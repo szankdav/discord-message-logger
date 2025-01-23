@@ -3,7 +3,7 @@ import { letterController } from "./letterController.js";
 import {
   insertLetters,
   updateLetterCount,
-  getLettersByAuthor,
+  getFirstAuthorByAuthor,
 } from "../model/letter.js";
 import { execute } from "../database/database.js";
 import { createTables } from "../database/createTables.js";
@@ -14,7 +14,7 @@ let db;
 vi.mock("../model/letter.js", () => ({
   insertLetters: vi.fn(),
   updateLetterCount: vi.fn(),
-  getLettersByAuthor: vi.fn(),
+  getFirstAuthorByAuthor: vi.fn(),
 }));
 
 describe("letterController tests", () => {
@@ -68,13 +68,13 @@ describe("letterController tests", () => {
   it("should update letter counts for an existing author", async () => {
     const params = ["author1", "message", new Date()];
   
-    getLettersByAuthor.mockResolvedValue({ author: "author1" });
+    getFirstAuthorByAuthor.mockResolvedValue({ author: "author1" });
 
     await letterController(params);
 
     expect(insertLetters).not.toHaveBeenCalled(); 
     expect(updateLetterCount).toHaveBeenCalledTimes(params[1].length);
-    getLettersByAuthor.mockRestore();
+    getFirstAuthorByAuthor.mockRestore();
   });
 
   it("should handle empty messages without throwing errors", async () => {
@@ -93,17 +93,17 @@ describe("letterController tests", () => {
     expect(updateLetterCount).not.toHaveBeenCalled();
   });
 
-  it("should log errors if `getLettersByAuthor` fails", async () => {
+  it("should log errors if `getFirstAuthorByAuthor` fails", async () => {
     const params = ["author1", "message", new Date()];
     const consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {});
 
-    getLettersByAuthor.mockRejectedValueOnce(new Error("Database error"));
+    getFirstAuthorByAuthor.mockRejectedValueOnce(new Error("Database error"));
 
     await letterController(params);
 
     expect(consoleSpy).toHaveBeenCalledWith(expect.any(Error));
     consoleSpy.mockRestore();
-    getLettersByAuthor.mockRestore();
+    getFirstAuthorByAuthor.mockRestore();
   });
 
   it("should log errors if `insertLetters` fails", async () => {

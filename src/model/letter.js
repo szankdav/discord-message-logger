@@ -19,8 +19,8 @@ export const updateLetterCount = async (params) => {
   }
 };
 
-export const getLettersByAuthor = async (params) => {
-  const sql = `SELECT * FROM Letters WHERE author = ?`;
+export const getFirstAuthorByAuthor = async (params) => {
+  const sql = `SELECT author FROM Letters WHERE author = ?`;
   try {
     return await fetchFirst(db, sql, params);
   } catch (error) {
@@ -35,7 +35,16 @@ export const getAllLetters = async () => {
   } catch (error) {
     console.log(error);
   }
-}
+};
+
+export const getAllAuthors = async () => {
+  const sql = `SELECT author FROM Letters GROUP BY author`;
+  try {
+    return await fetchAll(db, sql);
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 export const insertLetters = async (params) => {
   const alphabet = [
@@ -79,9 +88,14 @@ export const insertLetters = async (params) => {
   const sql = `INSERT INTO Letters (author, letter, count, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?)`;
 
   try {
-    alphabet.forEach(async (letter) => {
-      params[1] = letter;
-      await execute(db, sql, params);
+    return new Promise(async (resolve, reject) => {
+      alphabet.forEach((letter) => {
+        params[1] = letter;
+        db.serialize(async () => {
+          await execute(db, sql, params);
+          resolve();
+        });
+      });
     });
   } catch (error) {
     console.log(error);

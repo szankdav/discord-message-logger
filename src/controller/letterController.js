@@ -1,27 +1,33 @@
 import {
   insertLetters,
   updateLetterCount,
-  getLettersByAuthor,
+  getFirstAuthorByAuthor,
   getAllLetters,
+  getAllAuthors,
 } from "../model/letter.js";
 
 export const letterController = async (params) => {
   try {
     const existingAuthor = await checkAuthorExistense(params[0]);
-    if (!existingAuthor) {
-      await insertLetters([params[0], '', 0, params[2], params[2]]);
-      await letterIterator(params);
-    } else {
-      await letterIterator(params);
-    }
+    if (!existingAuthor)
+      await insertLetters([params[0], "", 0, params[2], params[2]]);
+    await letterIterator(params);
   } catch (error) {
     console.log(error);
   }
 };
 
 export const getAllLettersController = async () => {
-try {
+  try {
     return await getAllLetters();
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getAllAuthorsController = async () => {
+  try {
+    return await getAllAuthors();
   } catch (error) {
     console.log(error);
   }
@@ -29,7 +35,7 @@ try {
 
 const checkAuthorExistense = async (params) => {
   try {
-    return await getLettersByAuthor(params);
+    return await getFirstAuthorByAuthor(params);
   } catch (error) {
     console.log(error);
   }
